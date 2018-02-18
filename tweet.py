@@ -47,17 +47,26 @@ def init_api():
     elif debug:
         print 'Could not find secrets'
 
-def monitor_messages(threads):
+def monitor_messages(workers):
     LOG.info("About to start monitoring DMs")
     if api == None:
         init_api()
-    stream = tweepy.Stream(auth, StdOutListener(threads))
+    stream = tweepy.Stream(auth, StdOutListener(workers))
     stream.userstream()
 
 class StdOutListener( StreamListener ):
-    def __init__( self, threads ):
+    def get_status(self):
+        msg = ''
+        for w in self.workers:
+            msg += '{} - {}\n'.format(w.name, w.get_status())
+
+        return msg
+
+    def __init__( self, workers ):
         self.tweetCount = 0
-        self.threads = threads
+        self.workers = workers
+
+        self.keyword_map = {'status': self.get_status}
 
     def on_connect( self ):
         print "Connection established!!"
@@ -81,8 +90,11 @@ class StdOutListener( StreamListener ):
                         if not screen_name == "Dallas_Alerts":
                             LOG.info("Recieved DM {} from {}".format(message, screen_name))
 
-                            # Try to respond to this DM
                             msg = "Still alive"
+                            for keyword in self.keyword_map:
+                                if keyword.lower() in message:
+                                    msg = self.keyword_map[keyword]()
+
                             try:
                                 api.send_direct_message(screen_name=screen_name, text=msg)
                             except:

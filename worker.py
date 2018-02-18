@@ -35,3 +35,7 @@ class Worker():
             LOG.info("Setting status to killed for worker {}".format(self.name))
             self.status = KILLED
             LOG.exc(e)
+
+    def get_status(self):
+        status_map = {ALIVE: 'ALIVE', KILLED: 'KILLED', RUNNING: 'RUNNING'}
+        return status_map[self.status]

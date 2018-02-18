@@ -10,17 +10,17 @@ def main():
                 "BTC": 500,
                 "LTC": 20}
 
-    threads = []
+    workers = []
     for worker in ecoin_workers:
         w = Worker(target=ecoin_value, args=(worker, ecoin_workers[worker]), name="{}".format(worker))
         t = Thread(target=w.start, name=w.name)
         t.daemon = True
-        threads.append(t)
+        workers.append(w)
         t.start()
 
     # Create the thread that watches for DMs
-    dm_worker = Worker(target=monitor_messages, name="DM Worker", args=(threads,)).start()
-    Theead(target=dm_worker.start).start()
+    dm_worker = Worker(target=monitor_messages, name="DM Worker", args=(workers,)).start()
+    Thread(target=dm_worker.start).start()
 
 if __name__ == "__main__":
     LOG.info("runner is starting")
