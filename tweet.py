@@ -47,16 +47,17 @@ def init_api():
     elif debug:
         print 'Could not find secrets'
 
-def monitor_messages():
+def monitor_messages(threads):
     LOG.info("About to start monitoring DMs")
     if api == None:
         init_api()
-    stream = tweepy.Stream(auth, StdOutListener())
+    stream = tweepy.Stream(auth, StdOutListener(threads))
     stream.userstream()
 
 class StdOutListener( StreamListener ):
-    def __init__( self ):
+    def __init__( self, threads ):
         self.tweetCount = 0
+        self.threads = threads
 
     def on_connect( self ):
         print "Connection established!!"
