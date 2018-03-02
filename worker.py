@@ -30,7 +30,10 @@ class Worker():
 
     def run_target(self):
         try:
-            self.target(*self.args)
+            if self.args:
+                self.target(*self.args)
+            else:
+                self.target()
         except Exception as e:
             LOG.info("Setting status to killed for worker {}".format(self.name))
             self.status = KILLED
