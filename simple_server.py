@@ -13,6 +13,7 @@ Send a POST request::
 from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
 import SocketServer
 from logger import Logger
+from urllib import parse
 
 LOG = Logger()
 class S(BaseHTTPRequestHandler):
@@ -31,7 +32,7 @@ class S(BaseHTTPRequestHandler):
     def do_POST(self):
         # Doesn't do anything with posted data
         content_length = int(self.headers['Content-Length']) # <--- Gets the size of data
-        post_data = self.rfile.read(content_length) # <--- Gets the data itself
+        post_data = parse.unquote_plus(self.rfile.read(content_length)) # <--- Gets the data itself
         self._set_headers()
         self.wfile.write("{}".format(post_data))
 
@@ -39,6 +40,7 @@ class S(BaseHTTPRequestHandler):
 	LOG.info("Attempting to send a message to twitter: {}".format(post_data))
 	with open(fname, 'w') as f:
 	    if len(post_data) > 0:
+                urllib.parse.unquote(url)
 		f.write(post_data)
         
 def run(server_class=HTTPServer, handler_class=S, port=8000):
