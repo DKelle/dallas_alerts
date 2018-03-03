@@ -34,6 +34,12 @@ class S(BaseHTTPRequestHandler):
         post_data = self.rfile.read(content_length) # <--- Gets the data itself
         self._set_headers()
         self.wfile.write("{}".format(post_data))
+
+	fname = "/home/ubuntu/dallas_alerts/incoming_messages/smash_alert.txt"
+	LOG.info("Attempting to send a message to twitter: {}".format(post_data))
+	with open(fname, 'w') as f:
+	    if len(post_data) > 0:
+		f.write(post_data)
         
 def run(server_class=HTTPServer, handler_class=S, port=8000):
     LOG.info('About to start simple server')

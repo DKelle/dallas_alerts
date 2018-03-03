@@ -7,14 +7,23 @@ api = None
 auth = None
 LOG = Logger()
 
+tweets = {}
 def main():
     init_api()
 
 def tweet(alert):
+    global tweets
+
+    addition = 0
+    if alert in tweets:
+        addition = tweets[alert] + 1
+    tweets[alert] = addition
+
     debug = False 
     if api == None:
         init_api()
 
+    alert = alert + '({})'.format(addition)
     if debug:
         print 'Tweeting line:', alert 
 

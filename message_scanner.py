@@ -30,7 +30,7 @@ def watch_for_messages():
                     # Now that we have tweeted out this message, lets delete the file
                     os.remove(f.name)
 
-        time.sleep(60)
+        time.sleep(15)
 
 if __name__ == "__main__":
     watch_for_messages()
